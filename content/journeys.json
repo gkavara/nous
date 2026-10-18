@@ -1,0 +1,128 @@
+[
+  {
+    "id": "stoic",
+    "title": "Στωική εβδομάδα",
+    "description": "Επτά ιδέες για ηρεμία μέσα στο χάος.",
+    "ideas": [
+      "enchiridion:0",
+      "enchiridion:1",
+      "meditations:0",
+      "meditations:1",
+      "seneca:0",
+      "shortness:1",
+      "meditations:2"
+    ]
+  },
+  {
+    "id": "habits",
+    "title": "Χτίσε συνήθειες που μένουν",
+    "description": "Η επιστήμη πίσω από τις μικρές αλλαγές.",
+    "ideas": [
+      "atomic:0",
+      "atomic:1",
+      "duhigg:0",
+      "tiny:0",
+      "tiny:1",
+      "atomic:2",
+      "atomic:3",
+      "atomic:4",
+      "tiny:3",
+      "atomic:5"
+    ]
+  },
+  {
+    "id": "decide",
+    "title": "Καλύτερες αποφάσεις",
+    "description": "Πώς να σκέφτεσαι όταν δεν ξέρεις το αποτέλεσμα.",
+    "ideas": [
+      "kahneman:0",
+      "duke:0",
+      "duke:1",
+      "munger:0",
+      "marks:0",
+      "bezos:0",
+      "bezos:1",
+      "kahneman:5",
+      "munger:2"
+    ]
+  },
+  {
+    "id": "money",
+    "title": "Χρήμα και ψυχολογία",
+    "description": "Ο πλούτος ως συμπεριφορά, όχι ως ευφυΐα.",
+    "ideas": [
+      "babylon:0",
+      "housel:1",
+      "housel:0",
+      "graham:0",
+      "graham:1",
+      "buffett:4",
+      "kahneman:2",
+      "housel:3",
+      "housel:4"
+    ]
+  },
+  {
+    "id": "meaning",
+    "title": "Νόημα και ευτυχία",
+    "description": "Από τον Επίκουρο ως τη μελέτη του Χάρβαρντ.",
+    "ideas": [
+      "frankl:0",
+      "frankl:3",
+      "epicurus:0",
+      "haidt:1",
+      "haidt:2",
+      "ethics:1",
+      "goodlife:0",
+      "camus:1",
+      "nietzsche:0"
+    ]
+  },
+  {
+    "id": "persuade",
+    "title": "Πώς σε πείθουν",
+    "description": "Οι τεχνικές πίσω από κάθε paywall και διαφήμιση.",
+    "ideas": [
+      "cialdini:0",
+      "cialdini:1",
+      "cialdini:2",
+      "cialdini:3",
+      "cialdini:4",
+      "cialdini:5",
+      "kahneman:1",
+      "kahneman:2"
+    ]
+  },
+  {
+    "id": "focus",
+    "title": "Συγκέντρωση σε έναν θορυβώδη κόσμο",
+    "description": "Λιγότερα, βαθύτερα, καλύτερα.",
+    "ideas": [
+      "deepwork:0",
+      "deepwork:1",
+      "essentialism:0",
+      "essentialism:1",
+      "timerules:0",
+      "timerules:2",
+      "burkeman:0",
+      "burkeman:1",
+      "deepwork:3"
+    ]
+  },
+  {
+    "id": "relate",
+    "title": "Σχέσεις που αντέχουν",
+    "description": "Ακρόαση, εμπιστοσύνη και καθαρή κουβέντα.",
+    "ideas": [
+      "covey:4",
+      "carnegie:0",
+      "nvc:0",
+      "nvc:1",
+      "nvc:2",
+      "gottman:0",
+      "gottman:1",
+      "covey:5",
+      "brown:0"
+    ]
+  }
+]

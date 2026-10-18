@@ -1,0 +1,18 @@
+{
+  "topics": [
+    "habits.json",
+    "stoicism.json",
+    "philosophy.json",
+    "psychology.json",
+    "decisions.json",
+    "money.json",
+    "business.json",
+    "productivity.json",
+    "learning.json",
+    "relationships.json",
+    "health.json",
+    "creativity.json",
+    "leadership.json"
+  ],
+  "journeys": "journeys.json"
+}
