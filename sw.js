@@ -1,6 +1,7 @@
 /* Nous service worker: offline cache + daily reminder. Bump VERSION when the app shell changes. */
-const VERSION = "nous-v3";
+const VERSION = "nous-v4";
 const SHELL = ["./", "index.html", "css/app.css", "js/store.js", "js/themes.js", "js/story.js", "js/app.js", "manifest.webmanifest",
+  "fonts/fonts.css", "fonts/literata-greek.woff2", "fonts/literata-latin.woff2", "fonts/commissioner-greek.woff2", "fonts/commissioner-latin.woff2",
   "icons/favicon-48.png", "icons/badge-96.png", "icons/icon-192.png", "icons/icon-512.png", "content/index.json"];
 importScripts("js/store.js");
 
@@ -18,17 +19,16 @@ self.addEventListener("activate", e => e.waitUntil((async () => {
   await self.clients.claim();
 })()));
 
-// Same-origin files and fonts: answer from cache at once, refresh in the background (stale-while-revalidate).
+// Same-origin files (fonts included): answer from cache at once, refresh in the background (stale-while-revalidate).
 self.addEventListener("fetch", e => {
   const req = e.request, url = new URL(req.url);
   if (req.method !== "GET") return;
-  const ours = url.origin === location.origin, font = /fonts\.(googleapis|gstatic)\.com$/.test(url.hostname);
-  if (!ours && !font) return;
+  if (url.origin !== location.origin) return;
   e.respondWith((async () => {
     const c = await caches.open(VERSION);
     const key = req.mode === "navigate" ? "index.html" : req;
     const hit = await c.match(key, { ignoreSearch: req.mode === "navigate" });
-    const net = fetch(req).then(r => { if (r.ok || r.type === "opaque") c.put(key, r.clone()); return r }).catch(() => null);
+    const net = fetch(req).then(r => { if (r.ok) c.put(key, r.clone()); return r }).catch(() => null);
     if (hit) { e.waitUntil(net); return hit }
     return (await net) || new Response("Offline", { status: 503 });
   })());

@@ -263,7 +263,7 @@ async function shareImage(x) {
       const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = file.name; a.click();
       setTimeout(() => URL.revokeObjectURL(a.href), 1000); toast("Η εικόνα κατέβηκε.");
     }
-  } catch (e) { toast("Δεν φτιάχτηκε η εικόνα.") }
+  } catch (e) { toast(e.name === "TooLong" ? `Η κάρτα «${x.h}» δεν χωράει σε story ούτε με κείμενο ${NousStory.MIN_TEXT}px.` : "Δεν φτιάχτηκε η εικόνα.") }
   sharing = false;
 }
 
