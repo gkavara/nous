@@ -1,15 +1,19 @@
 #!/usr/bin/env node
 /* Checks content/: every topic file listed in index.json, required fields, unique source ids,
    a unique stable id on every card, and that journeys and the legacy map point at cards that exist.
-   Usage: node tools/check-content.js */
+   content/published-ids.json records every card id ever published: none may disappear from the content
+   unless it is listed under "retired". When the check passes, new ids are added to that list.
+   Usage: node tools/check-content.js [--dry-run]   (--dry-run: check only, never write the list) */
 const fs = require("fs"), path = require("path");
 const dir = path.join(__dirname, "..", "content");
+const PUBLISHED = "published-ids.json";
+const dryRun = process.argv.includes("--dry-run");
 const read = f => JSON.parse(fs.readFileSync(path.join(dir, f), "utf8"));
 const ID = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 const errors = [], ids = new Map(), srcIds = new Set();
 const index = read("index.json");
 
-const special = new Set(["index.json", index.journeys, index.legacy]);
+const special = new Set(["index.json", index.journeys, index.legacy, PUBLISHED]);
 const onDisk = fs.readdirSync(dir).filter(f => f.endsWith(".json") && !special.has(f));
 for (const f of onDisk) if (!index.topics.includes(f)) errors.push(`${f} υπάρχει αλλά λείπει από το index.json`);
 
@@ -30,8 +34,36 @@ for (const f of index.topics) {
     });
   }
 }
-for (const j of read(index.journeys)) for (const id of j.ideas) if (!ids.has(id)) errors.push(`Διαδρομή "${j.id}": δεν υπάρχει κάρτα με id "${id}"`);
-if (index.legacy) for (const [old, id] of Object.entries(read(index.legacy))) if (!ids.has(id)) errors.push(`${index.legacy}: το "${old}" δείχνει σε ανύπαρκτο id "${id}"`);
 
-if (errors.length) { console.error(errors.join("\n")); console.error(`\n${errors.length} σφάλματα.`); process.exit(1) }
-console.log(`OK: ${index.topics.length} θέματα, ${srcIds.size} πηγές, ${ids.size} κάρτες.`);
+/* Published ids: each must still be in the content, or be retired on purpose. */
+const firstRun = !fs.existsSync(path.join(dir, PUBLISHED));
+let pub = { published: [], retired: {} };
+if (!firstRun) {
+  try { pub = read(PUBLISHED) } catch (e) { errors.push(`${PUBLISHED}: ${e.message}`) }
+  if (!Array.isArray(pub.published)) { errors.push(`${PUBLISHED}: το "published" πρέπει να είναι λίστα`); pub.published = [] }
+  if (!pub.retired || typeof pub.retired !== "object" || Array.isArray(pub.retired)) { errors.push(`${PUBLISHED}: το "retired" πρέπει να είναι αντικείμενο { "id": "λόγος" }`); pub.retired = {} }
+}
+const published = new Set(pub.published), retired = pub.retired;
+for (const id of published) {
+  if (!ids.has(id) && !(id in retired)) errors.push(`Λείπει η δημοσιευμένη κάρτα "${id}". Επανάφερέ τη ή κατάχωρισέ τη στο "retired" του ${PUBLISHED}.`);
+}
+for (const id of Object.keys(retired)) {
+  if (!published.has(id)) errors.push(`${PUBLISHED}: το αποσυρμένο "${id}" δεν έχει δημοσιευτεί ποτέ (λάθος στο id;)`);
+  else if (ids.has(id)) errors.push(`${ids.get(id)}: το "${id}" είναι αποσυρμένο και δεν ξαναχρησιμοποιείται. Δώσε στην κάρτα νέο id ή βγάλ' το από το "retired".`);
+}
+
+const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
+const exists = id => ids.has(id) || id in retired;
+for (const j of read(index.journeys)) for (const id of j.ideas) if (!ids.has(id)) errors.push(`Διαδρομή "${j.id}": δεν υπάρχει κάρτα με id "${id}"${id in retired ? " (είναι αποσυρμένη)" : ""}`);
+if (index.legacy) for (const [old, id] of Object.entries(read(index.legacy))) if (!exists(id) && !published.has(id)) errors.push(`${index.legacy}: το "${old}" δείχνει σε ανύπαρκτο id "${id}"`);
+
+if (errors.length) { console.error(errors.join("\n")); console.error(`\n${plural(errors.length, "σφάλμα", "σφάλματα")}.`); process.exit(1) }
+console.log(`OK: ${index.topics.length} θέματα, ${srcIds.size} πηγές, ${ids.size} κάρτες, ${plural(Object.keys(retired).length, "αποσυρμένη", "αποσυρμένες")}.`);
+
+/* Record the new ids, keeping the existing order and appending the rest. */
+const added = [...ids.keys()].filter(id => !published.has(id));
+if (!added.length) process.exit(0);
+if (dryRun) { console.log(`${plural(added.length, "νέο id δεν έχει", "νέα ids δεν έχουν")} καταγραφεί ακόμα στο ${PUBLISHED} (--dry-run).`); process.exit(0) }
+const out = { published: [...pub.published, ...added], retired };
+fs.writeFileSync(path.join(dir, PUBLISHED), JSON.stringify(out, null, 2) + "\n");
+console.log(`${added.length === 1 ? "Προστέθηκε 1 νέο id" : `Προστέθηκαν ${added.length} νέα ids`} στο ${PUBLISHED}${firstRun ? " (νέο αρχείο)" : ""}.`);
