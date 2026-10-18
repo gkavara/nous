@@ -4,13 +4,13 @@
     "title": "Στωική εβδομάδα",
     "description": "Επτά ιδέες για ηρεμία μέσα στο χάος.",
     "ideas": [
-      "enchiridion:0",
-      "enchiridion:1",
-      "meditations:0",
-      "meditations:1",
-      "seneca:0",
-      "shortness:1",
-      "meditations:2"
+      "enchiridion-ti-exartatai-apo-sena",
+      "enchiridion-mas-tarazoyn-oi-kriseis",
+      "meditations-proini-proetoimasia",
+      "meditations-to-empodio-ginetai-dromos",
+      "seneca-ypoferoyme-sti-fantasia",
+      "shortness-fylame-ta-lefta-ochi-ton",
+      "meditations-memento-mori"
     ]
   },
   {
@@ -18,16 +18,16 @@
     "title": "Χτίσε συνήθειες που μένουν",
     "description": "Η επιστήμη πίσω από τις μικρές αλλαγές.",
     "ideas": [
-      "atomic:0",
-      "atomic:1",
-      "duhigg:0",
-      "tiny:0",
-      "tiny:1",
-      "atomic:2",
-      "atomic:3",
-      "atomic:4",
-      "tiny:3",
-      "atomic:5"
+      "atomic-to-1pct-kathe-mera",
+      "atomic-taytotita-prin-apo-stocho",
+      "duhigg-o-vrochos-tis-synitheias",
+      "tiny-symperifora-kinitro-ikanotita-enaysma",
+      "tiny-to-kinitro-den-einai-axiopisto",
+      "atomic-o-kanonas-ton-dyo-lepton",
+      "atomic-stoivaxi-synitheion",
+      "atomic-to-perivallon-nikaei-ti-thelisi",
+      "tiny-giortase-amesos",
+      "atomic-mi-chaseis-pote-dyo-fores"
     ]
   },
   {
@@ -35,15 +35,15 @@
     "title": "Καλύτερες αποφάσεις",
     "description": "Πώς να σκέφτεσαι όταν δεν ξέρεις το αποτέλεσμα.",
     "ideas": [
-      "kahneman:0",
-      "duke:0",
-      "duke:1",
-      "munger:0",
-      "marks:0",
-      "bezos:0",
-      "bezos:1",
-      "kahneman:5",
-      "munger:2"
+      "kahneman-dyo-systimata",
+      "duke-apofasi-den-einai-apotelesma",
+      "duke-kathe-apofasi-einai-stoichima",
+      "munger-antistrofi",
+      "marks-skepsi-deyteroy-vathmoy",
+      "bezos-portes-diplis-kateythynsis",
+      "bezos-elachistopoiisi-metameleias",
+      "kahneman-i-plani-toy-schediasmoy",
+      "munger-ta-kinitra-exigoyn-ta-panta"
     ]
   },
   {
@@ -51,15 +51,15 @@
     "title": "Χρήμα και ψυχολογία",
     "description": "Ο πλούτος ως συμπεριφορά, όχι ως ευφυΐα.",
     "ideas": [
-      "babylon:0",
-      "housel:1",
-      "housel:0",
-      "graham:0",
-      "graham:1",
-      "buffett:4",
-      "kahneman:2",
-      "housel:3",
-      "housel:4"
+      "babylon-plirose-prota-ton-eayto-soy",
+      "housel-o-ploytos-den-fainetai",
+      "housel-arketo",
+      "graham-o-kyrios-agora",
+      "graham-perithorio-asfaleias",
+      "buffett-mi-chaneis",
+      "kahneman-apostrofi-apoleias",
+      "housel-perithorio-gia-lathi",
+      "housel-i-eleytheria-einai-to-megalytero"
     ]
   },
   {
@@ -67,15 +67,15 @@
     "title": "Νόημα και ευτυχία",
     "description": "Από τον Επίκουρο ως τη μελέτη του Χάρβαρντ.",
     "ideas": [
-      "frankl:0",
-      "frankl:3",
-      "epicurus:0",
-      "haidt:1",
-      "haidt:2",
-      "ethics:1",
-      "goodlife:0",
-      "camus:1",
-      "nietzsche:0"
+      "frankl-i-teleytaia-eleytheria",
+      "frankl-i-eytychia-den-kynigietai",
+      "epicurus-oi-aples-idones",
+      "haidt-idoniki-prosarmogi",
+      "haidt-i-archi-tis-proodoy",
+      "ethics-ena-chelidoni-den-fernei-tin",
+      "goodlife-oi-scheseis-provlepoyn-tin-eytychia",
+      "camus-o-eytychismenos-sisyfos",
+      "nietzsche-amor-fati"
     ]
   },
   {
@@ -83,14 +83,14 @@
     "title": "Πώς σε πείθουν",
     "description": "Οι τεχνικές πίσω από κάθε paywall και διαφήμιση.",
     "ideas": [
-      "cialdini:0",
-      "cialdini:1",
-      "cialdini:2",
-      "cialdini:3",
-      "cialdini:4",
-      "cialdini:5",
-      "kahneman:1",
-      "kahneman:2"
+      "cialdini-amoivaiotita",
+      "cialdini-desmeysi-kai-synepeia",
+      "cialdini-koinoniki-apodeixi",
+      "cialdini-aythentia",
+      "cialdini-sympatheia",
+      "cialdini-spaniotita",
+      "kahneman-agkyra",
+      "kahneman-apostrofi-apoleias"
     ]
   },
   {
@@ -98,15 +98,15 @@
     "title": "Συγκέντρωση σε έναν θορυβώδη κόσμο",
     "description": "Λιγότερα, βαθύτερα, καλύτερα.",
     "ideas": [
-      "deepwork:0",
-      "deepwork:1",
-      "essentialism:0",
-      "essentialism:1",
-      "timerules:0",
-      "timerules:2",
-      "burkeman:0",
-      "burkeman:1",
-      "deepwork:3"
+      "deepwork-vathia-kai-richi-doyleia",
+      "deepwork-ypoleimma-prosochis",
+      "essentialism-ligotera-alla-kalytera",
+      "essentialism-i-sigoyra-nai-i-ochi",
+      "timerules-epeigon-i-simantiko",
+      "timerules-fae-prota-ton-vatracho",
+      "burkeman-tesseris-chiliades-evdomades",
+      "burkeman-ta-eiserchomena-den-adeiazoyn-pote",
+      "deepwork-agkaliase-ti-varemara"
     ]
   },
   {
@@ -114,15 +114,15 @@
     "title": "Σχέσεις που αντέχουν",
     "description": "Ακρόαση, εμπιστοσύνη και καθαρή κουβέντα.",
     "ideas": [
-      "covey:4",
-      "carnegie:0",
-      "nvc:0",
-      "nvc:1",
-      "nvc:2",
-      "gottman:0",
-      "gottman:1",
-      "covey:5",
-      "brown:0"
+      "covey-prota-na-katalaveis",
+      "carnegie-endiaferon-gia-ton-allon",
+      "nvc-paratirisi-choris-krisi",
+      "nvc-pes-ti-niotheis",
+      "nvc-piso-apo-kathe-synaisthima-mia",
+      "gottman-pente-pros-ena",
+      "gottman-oi-tesseris-kavalarides",
+      "covey-o-synaisthimatikos-logariasmos",
+      "brown-i-eyalototita-os-tharros"
     ]
   }
 ]

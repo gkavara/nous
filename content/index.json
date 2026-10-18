@@ -14,5 +14,6 @@
     "creativity.json",
     "leadership.json"
   ],
-  "journeys": "journeys.json"
+  "journeys": "journeys.json",
+  "legacy": "legacy-ids.json"
 }

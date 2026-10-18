@@ -2,15 +2,16 @@
    Content lives in content/*.json (see content/index.json); progress lives in localStorage on this device. */
 
 /* ---------------- CONTENT ---------------- */
-let SRC = [], JOURNEYS = [], IDEA = {}, TOPICS = [];
+let SRC = [], JOURNEYS = [], IDEA = {}, TOPICS = [], INDEX = null;
+const getContent = f => fetch("content/" + f).then(r => { if (!r.ok) throw new Error(f); return r.json() });
 async function loadContent() {
-  const get = f => fetch("content/" + f).then(r => { if (!r.ok) throw new Error(f); return r.json() });
-  const index = await get("index.json");
+  const get = getContent;
+  const index = INDEX = await get("index.json");
   const [files, journeys] = await Promise.all([Promise.all(index.topics.map(get)), get(index.journeys)]);
   SRC = []; IDEA = {};
   files.forEach(f => f.sources.forEach(s => {
     const src = { id: s.id, t: s.title, a: s.author || "", topic: f.topic };
-    src.ideas = s.ideas.map((x, i) => ({ id: s.id + ":" + i, h: x.h, b: x.b, src }));
+    src.ideas = s.ideas.map(x => ({ id: x.id, h: x.h, b: x.b, src }));
     src.ideas.forEach(x => IDEA[x.id] = x);
     SRC.push(src);
   }));
@@ -29,6 +30,19 @@ function changed() { st.updated = Date.now(); try { localStorage.setItem(LS, JSO
 function getIdea(id) { if (IDEA[id]) return IDEA[id]; const m = st.mine.find(m => m.id === id); return m ? { id: m.id, h: m.h, b: m.b, src: Object.assign({}, MINE_SRC, { t: m.src || MINE_SRC.t }) } : null }
 function allIdeas() { return Object.values(IDEA).concat(st.mine.map(m => getIdea(m.id))) }
 const isSaved = id => st.vaults.some(s => s.ids.includes(id));
+
+/* Until v2, cards were known by position ("atomic:0"). content/legacy-ids.json maps those to the stable ids. */
+const SCHEMA = 2, OLD_ID = /^[a-z0-9-]+:\d+$/;
+async function migrate() {
+  if (st.schema >= SCHEMA) return;
+  const old = Object.keys(st.read).some(k => OLD_ID.test(k)) || st.vaults.some(v => v.ids.some(i => OLD_ID.test(i)));
+  if (old) {
+    const map = await getContent(INDEX.legacy), to = id => map[id] || id;
+    const read = {}; for (const k in st.read) read[to(k)] = st.read[k]; st.read = read;
+    st.vaults.forEach(v => v.ids = [...new Set(v.ids.map(to))]);
+  }
+  st.schema = SCHEMA; changed();
+}
 
 /* ---------------- HELPERS ---------------- */
 const $ = s => document.querySelector(s);
@@ -281,7 +295,7 @@ document.addEventListener("change", async e => {
   if (e.target.id === "remtime" && e.target.value) { st.reminder.time = e.target.value; changed(); scheduleReminder(); if (st.reminder.on) toast("Υπενθύμιση κάθε μέρα στις " + st.reminder.time + ".") }
   if (e.target.id === "importfile" && e.target.files[0]) {
     try { const v = JSON.parse(await e.target.files[0].text()); if (!v || typeof v.read !== "object" || !Array.isArray(v.vaults)) throw 0;
-      st = Object.assign(structuredClone(DEF), v); changed(); scheduleReminder(); render(); toast("Το αντίγραφο φορτώθηκε.") } catch (_) { toast("Το αρχείο δεν είναι αντίγραφο του Nous.") }
+      st = Object.assign(structuredClone(DEF), v); await migrate(); changed(); scheduleReminder(); render(); toast("Το αντίγραφο φορτώθηκε.") } catch (_) { toast("Το αρχείο δεν είναι αντίγραφο του Nous.") }
   }
 });
 document.addEventListener("keydown", e => { if (e.key === "Enter" && e.target.id === "newvault") A.mkvault(); if (e.key === "Enter" && e.target.id === "sheetnew") A.sheetmk() });
@@ -290,5 +304,5 @@ addEventListener("hashchange", () => { tabFromHash(); sub = null; render() });
 /* ---------------- START ---------------- */
 if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});
 render();
-loadContent().then(() => { ready = true; mirror(); scheduleReminder(); if (st.reminder.on) registerPeriodic(true); render() })
+loadContent().then(migrate).then(() => { ready = true; mirror(); scheduleReminder(); if (st.reminder.on) registerPeriodic(true); render() })
   .catch(() => { $("#view").innerHTML = `<p class="empty">Δεν φορτώθηκαν οι ιδέες. Έλεγξε τη σύνδεση και άνοιξε ξανά την εφαρμογή.</p>` });

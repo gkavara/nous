@@ -1,5 +1,5 @@
 /* Nous service worker: offline cache + daily reminder. Bump VERSION when the app shell changes. */
-const VERSION = "nous-v1";
+const VERSION = "nous-v2";
 const SHELL = ["./", "index.html", "css/app.css", "js/store.js", "js/app.js", "manifest.webmanifest",
   "icons/favicon-48.png", "icons/badge-96.png", "icons/icon-192.png", "icons/icon-512.png", "content/index.json"];
 importScripts("js/store.js");
@@ -9,7 +9,7 @@ self.addEventListener("install", e => e.waitUntil((async () => {
   await c.addAll(SHELL);
   // Precache every content file listed in the index, so all cards work offline from the first visit.
   const index = await (await c.match("content/index.json")).json();
-  await c.addAll([...index.topics, index.journeys].map(f => "content/" + f));
+  await c.addAll([...index.topics, index.journeys, index.legacy].map(f => "content/" + f));
   self.skipWaiting();
 })()));
 
