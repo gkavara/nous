@@ -106,3 +106,26 @@ nav.tabs button[aria-current="page"]{color:var(--accent)}
 input[type=time]{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:9px 10px;font:inherit}
 .switch{display:flex;align-items:center;gap:10px;cursor:pointer;font-weight:500}
 .switch input{width:20px;height:20px;accent-color:var(--accent)}
+
+/* Topic colours (tools/ig-template.html style): --tbg/--tfg/--tac/--tmu/--tln come from the .t-<topic> classes built from js/themes.js */
+.idea[class*=" t-"]{position:relative;overflow:hidden;background:var(--tbg);color:var(--tfg);border-color:var(--tln)}
+.idea[class*=" t-"]::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.07;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+.idea[class*=" t-"] > :not(.glyph){position:relative;z-index:1}
+.idea[class*=" t-"] .src{color:var(--tmu)}
+.idea[class*=" t-"] .src .tp{color:var(--tac)}
+.idea[class*=" t-"] .acts{border-top-color:var(--tln)}
+.idea[class*=" t-"] .acts button{color:var(--tmu)}
+.idea[class*=" t-"] .acts button:hover{background:var(--tln);color:var(--tfg)}
+.idea[class*=" t-"] .acts button[aria-pressed="true"],.idea[class*=" t-"] .chk{color:var(--tac)}
+.idea[class*=" t-"].featured{border:2px solid var(--tac)}
+.idea[class*=" t-"] :focus-visible{outline-color:var(--tac)}
+.idea .glyph{position:absolute;right:-6px;bottom:28px;font:700 150px/.8 var(--display);letter-spacing:-.04em;color:var(--tln);opacity:.75;pointer-events:none;user-select:none}
+
+.reader.themed{--bg:var(--tbg);--ink:var(--tfg);--muted:var(--tmu);--line:var(--tln);--surface:var(--tbg);--accent:var(--tac);--accent-ink:var(--tbg);--chip:var(--tln);color:var(--ink)}
+.reader.themed .rbody .au{color:var(--muted)}
+.rbody{overflow-x:hidden}
+.rbody .wrap{position:relative}
+.rbig{position:absolute;right:-10px;bottom:10px;font:700 clamp(160px,42vw,300px)/.8 var(--display);letter-spacing:-.04em;color:var(--tln,var(--line));pointer-events:none;user-select:none;z-index:0}
+.rbody .wrap > :not(.rbig){position:relative;z-index:1}
+.rtop .wrap{gap:8px}

@@ -1,0 +1,125 @@
+<!doctype html><html lang="el"><head><meta charset="utf-8">
+<style>
+@font-face{font-family:Lit;src:url("../fonts/Literata%255Bopsz%252Cwght%255D.ttf");font-weight:200 900}
+@font-face{font-family:Com;src:url("../fonts/Commissioner%255BFLAR%252CVOLM%252Cslnt%252Cwght%255D.ttf");font-weight:100 900}
+body{margin:0;background:#888;display:flex;flex-direction:column;gap:40px;padding:40px}
+.s{width:1080px;height:1350px;position:relative;overflow:hidden;box-sizing:border-box;padding:96px 92px 84px;display:flex;flex-direction:column;
+  background:var(--bg);color:var(--fg);font-family:Com,sans-serif}
+.s.story{height:1920px;padding:220px 92px 260px}
+.stoic{--bg:#1d3354;--fg:#f3eee2;--ac:#e8a93e;--mu:rgba(243,238,226,.62);--ln:rgba(243,238,226,.18)}
+.psy{--bg:#3d1c43;--fg:#f7edf3;--ac:#ff9b73;--mu:rgba(247,237,243,.62);--ln:rgba(247,237,243,.18)}
+.money{--bg:#1c4635;--fg:#eff1e6;--ac:#d9c25f;--mu:rgba(239,241,230,.62);--ln:rgba(239,241,230,.18)}
+.grain::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.10;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+.top{display:flex;justify-content:space-between;align-items:center;font-size:26px;letter-spacing:.14em;text-transform:uppercase;font-weight:600}
+.top .tp{color:var(--ac)}
+.top .ct{color:var(--mu);font-variant-numeric:tabular-nums;letter-spacing:.08em}
+.big{position:absolute;right:-20px;bottom:175px;font-family:Lit;font-weight:700;font-size:430px;line-height:.8;color:var(--ln);font-variation-settings:"opsz" 72;letter-spacing:-.04em}
+.mid{flex:1;display:flex;flex-direction:column;justify-content:center;gap:44px;position:relative;z-index:1}
+h1{font-family:Lit;font-weight:700;font-size:104px;line-height:1.04;margin:0;letter-spacing:-.015em;font-variation-settings:"opsz" 72}
+h1 em{font-style:normal;color:var(--ac)}
+h2{font-family:Lit;font-weight:700;font-size:82px;line-height:1.08;margin:0;letter-spacing:-.01em;font-variation-settings:"opsz" 72}
+p{font-size:40px;line-height:1.48;margin:0;max-width:880px;font-weight:400}
+.rule{width:120px;height:8px;background:var(--ac);border-radius:4px}
+.src{font-size:30px;color:var(--mu)}
+.src b{color:var(--fg);font-weight:600}
+.foot{display:flex;justify-content:space-between;align-items:flex-end;position:relative;z-index:1;border-top:2px solid var(--ln);padding-top:30px}
+.mark{font-family:Lit;font-weight:700;font-size:44px;letter-spacing:-.01em}
+.mark i{font-style:normal;color:var(--ac)}
+.swipe{font-size:30px;color:var(--ac);font-weight:600;letter-spacing:.04em}
+.tip{font-size:30px;color:var(--mu)}
+.save{display:inline-flex;align-items:center;gap:22px;font-size:40px;font-weight:600;border:3px solid var(--ac);color:var(--ac);border-radius:999px;padding:24px 40px;align-self:flex-start}
+.save svg{width:44px;height:44px;stroke:currentColor;fill:none;stroke-width:2.4}
+</style></head><body>
+
+<!-- ===== Carousel A: Stoic ===== -->
+<div class="s stoic grain" id="a1">
+  <div class="top"><span class="tp">Στωικισμός</span><span class="ct">Carousel · 3 ιδέες</span></div>
+  <div class="big">3</div>
+  <div class="mid">
+    <div class="rule"></div>
+    <h1>Τρεις στωικές ιδέες για να <em>μη σε αγχώνει</em> ό,τι δεν ελέγχεις</h1>
+    <div class="src">Από τον <b>Επίκτητο</b> και τον <b>Μάρκο Αυρήλιο</b></div>
+  </div>
+  <div class="foot"><span class="mark">nous<i>.</i></span><span class="swipe">Σύρε →</span></div>
+</div>
+
+<div class="s stoic grain" id="a2">
+  <div class="top"><span class="tp">Στωικισμός</span><span class="ct">01 / 03</span></div>
+  <div class="big">01</div>
+  <div class="mid">
+    <h2>Τι εξαρτάται από σένα</h2>
+    <p>Χώρισε τα πάντα σε δύο κουτιά: όσα ελέγχεις (κρίσεις, επιλογές, προσπάθεια) και όσα όχι (γνώμες άλλων, τύχη, αποτελέσματα). Ενέργεια ξοδεύεις μόνο στο πρώτο.</p>
+    <div class="src"><b>Εγχειρίδιον</b> · Επίκτητος</div>
+  </div>
+  <div class="foot"><span class="mark">nous<i>.</i></span><span class="tip">Ideas worth keeping</span></div>
+</div>
+
+<div class="s stoic grain" id="a3">
+  <div class="top"><span class="tp">Στωικισμός</span><span class="ct">02 / 03</span></div>
+  <div class="big">02</div>
+  <div class="mid">
+    <h2>Μας ταράζουν οι κρίσεις, όχι τα γεγονότα</h2>
+    <p>Όταν κάτι σε πληγώνει, ψάξε πρώτα ποια γνώμη σου το κάνει να πονάει. Το γεγονός είναι ουδέτερο. Η ιστορία που του φοράμε δεν είναι.</p>
+    <div class="src"><b>Εγχειρίδιον</b> · Επίκτητος</div>
+  </div>
+  <div class="foot"><span class="mark">nous<i>.</i></span><span class="tip">Ideas worth keeping</span></div>
+</div>
+
+<div class="s stoic grain" id="a4">
+  <div class="top"><span class="tp">Στωικισμός</span><span class="ct">03 / 03</span></div>
+  <div class="big">03</div>
+  <div class="mid">
+    <h2>Το εμπόδιο γίνεται δρόμος</h2>
+    <p>Αυτό που μπλοκάρει τη δράση μπορεί να γίνει υλικό της. Κάθε δυσκολία είναι ευκαιρία να ασκήσεις υπομονή, θάρρος ή δικαιοσύνη.</p>
+    <div class="src"><b>Τα εις εαυτόν</b> · Μάρκος Αυρήλιος</div>
+  </div>
+  <div class="foot"><span class="mark">nous<i>.</i></span><span class="tip">Ideas worth keeping</span></div>
+</div>
+
+<div class="s stoic grain" id="a5">
+  <div class="top"><span class="tp">nous</span><span class="ct"></span></div>
+  <div class="mid">
+    <h1>Ποια από τις τρεις <em>χρειαζόσουν</em> σήμερα;</h1>
+    <p>Γράψε 1, 2 ή 3 στα σχόλια.</p>
+    <div class="save"><svg viewBox="0 0 24 24"><path d="M6 3h12v18l-6-4-6 4z"/></svg>Κράτα το για αργότερα</div>
+  </div>
+  <div class="foot"><span class="mark">nous<i>.</i></span><span class="tip">233 ιδέες · link στο bio</span></div>
+</div>
+
+<!-- ===== Carousel B: Psychology (cover + one slide) ===== -->
+<div class="s psy grain" id="b1">
+  <div class="top"><span class="tp">Ψυχολογία</span><span class="ct">Carousel · 6 ιδέες</span></div>
+  <div class="big">6</div>
+  <div class="mid">
+    <div class="rule"></div>
+    <h1>Έξι κόλπα που χρησιμοποιούν οι εφαρμογές για να <em>σε κάνουν να πληρώσεις</em></h1>
+    <div class="src">Από την <b>Ψυχολογία της πειθούς</b> του Robert Cialdini</div>
+  </div>
+  <div class="foot"><span class="mark">nous<i>.</i></span><span class="swipe">Σύρε →</span></div>
+</div>
+
+<div class="s psy grain" id="b2">
+  <div class="top"><span class="tp">Ψυχολογία</span><span class="ct">06 / 06</span></div>
+  <div class="big">06</div>
+  <div class="mid">
+    <h2>Σπανιότητα</h2>
+    <p>Κάτι μας φαίνεται πολυτιμότερο όταν λιγοστεύει. Αντίστροφες μετρήσεις και «τελευταία κομμάτια» υπάρχουν για να αποφασίσεις πριν σκεφτείς.</p>
+    <div class="src"><b>Η ψυχολογία της πειθούς</b> · Robert Cialdini</div>
+  </div>
+  <div class="foot"><span class="mark">nous<i>.</i></span><span class="tip">Ideas worth keeping</span></div>
+</div>
+
+<!-- ===== Story (shared from the app) ===== -->
+<div class="s story money grain" id="c1">
+  <div class="top"><span class="tp">Χρήματα</span><span class="ct">Η ιδέα της ημέρας</span></div>
+  <div class="big" style="bottom:340px">€</div>
+  <div class="mid">
+    <div class="rule"></div>
+    <h2 style="font-size:96px">Ο πλούτος δεν φαίνεται</h2>
+    <p style="font-size:44px">Πλούτος είναι τα χρήματα που δεν ξόδεψες. Το ακριβό αυτοκίνητο δείχνει μόνο ότι κάποτε υπήρχαν χρήματα.</p>
+    <div class="src"><b>Η ψυχολογία του χρήματος</b> · Morgan Housel</div>
+  </div>
+  <div class="foot"><span class="mark">nous<i>.</i></span><span class="tip">Διάβασέ το στο Nous</span></div>
+</div>
+</body></html>

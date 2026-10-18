@@ -121,20 +121,33 @@ const ICONS = { today: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/>
   vaults: '<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="12" cy="12" r="3.5"/><path d="M12 8.5V7M12 17v-1.5M7 20v1M17 20v1"/></svg>',
   me: '<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/></svg>' };
 const TABS = [["today", "Σήμερα"], ["explore", "Εξερεύνηση"], ["paths", "Διαδρομές"], ["vaults", "Vaults"], ["me", "Προφίλ"]];
-let tab = "today", sub = null, feedN = 12, q = "", exTopic = "Όλα", ctx = [], confirmKey = null, ready = false;
+let dailyId = null, tab = "today", sub = null, feedN = 12, q = "", exTopic = "Όλα", ctx = [], confirmKey = null, ready = false;
 function tabFromHash() { const h = location.hash.slice(1); if (TABS.some(t => t[0] === h)) tab = h }
 tabFromHash();
 
 function header() { const t = st.log[today()] || 0; $("#hstat").innerHTML = `<span class="pill"><b>${streak()}</b> σερί</span><span class="pill"><b>${Math.min(t, st.goal)}</b>/${st.goal} σήμερα</span>` }
 function navHTML() { $("#tabs").innerHTML = TABS.map(([k, l]) => `<button data-act="tab" data-tab="${k}" ${k === tab ? 'aria-current="page"' : ""}>${ICONS[k]}<span>${l}</span></button>`).join("") }
 
-function card(x, i, extra = "") { const read = !!st.read[x.id], sv = isSaved(x.id);
-  return `<article class="idea ${extra}" data-id="${esc(x.id)}" data-i="${i}">
+/* Topic colours (js/themes.js) become one class per topic: light look by default, dark look in dark mode. */
+const TH = NousThemes, themeOf = x => TH.theme(x.src.topic);
+(function themeCSS() {
+  const v = p => `--tbg:${p.bg};--tfg:${p.fg};--tac:${p.ac};--tmu:${p.mu};--tln:${p.ln}`;
+  const all = [...Object.values(TH.THEMES), TH.DEFAULT_THEME];
+  const light = all.map(t => `.t-${t.slug}{${v(t.light)}}`).join(""), dark = all.map(t => `.t-${t.slug}{${v(t.dark)}}`).join("");
+  const el = document.createElement("style");
+  el.textContent = light + `@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) ${dark.replace(/}\./g, "} :root:not([data-theme=\"light\"]) .")}}` +
+    dark.replace(/(^|})\./g, '$1:root[data-theme="dark"] .');
+  document.head.appendChild(el);
+})();
+
+function card(x, i, extra = "") { const read = !!st.read[x.id], sv = isSaved(x.id), t = themeOf(x);
+  return `<article class="idea t-${t.slug} ${extra}" data-id="${esc(x.id)}" data-i="${i}"><span class="glyph" aria-hidden="true">${esc(t.glyph)}</span>
   <div class="src"><span class="tp">${esc(x.src.topic)}</span><span>${esc(x.src.t)}${x.src.a ? " · " + esc(x.src.a) : ""}</span></div>
   <h3 data-act="open" data-i="${i}">${esc(x.h)}</h3><p data-act="open" data-i="${i}">${esc(x.b)}</p>
   <div class="acts"><button data-act="save" data-id="${esc(x.id)}" aria-pressed="${sv}">${sv ? "Κρατημένη" : "Κράτα"}</button>
   <button data-act="listen" data-id="${esc(x.id)}">${speakingId === x.id ? "Σταμάτα" : "Άκου"}</button>
   <button data-act="copy" data-id="${esc(x.id)}">Αντιγραφή</button>
+  <button data-act="shareimg" data-id="${esc(x.id)}">Κοινοποίηση ως εικόνα</button>
   ${x.src.id !== "mine" && !(sub && sub.type === "source") ? `<button data-act="source" data-sid="${x.src.id}">Πηγή</button>` : ""}
   <span class="chk">${read ? "✓ Διαβάστηκε" : ""}</span></div></article>` }
 function cards(list, startIdx = 0) { return list.map((x, i) => card(x, i + startIdx)).join("") }
@@ -143,7 +156,7 @@ function feedList() { const pool = allIdeas().filter(x => !st.topics.length || s
   const sh = shuffle(pool, today()); return sh.filter(x => !st.read[x.id]).concat(sh.filter(x => st.read[x.id])) }
 
 function viewToday() { const t = st.log[today()] || 0; const list = feedList();
-  const daily = list.find(x => !st.read[x.id]) || list[0]; const rest = list.filter(x => x !== daily); ctx = [daily, ...rest.slice(0, feedN)];
+  const daily = list.find(x => !st.read[x.id]) || list[0]; dailyId = daily.id; const rest = list.filter(x => x !== daily); ctx = [daily, ...rest.slice(0, feedN)];
   return `${installHTML("today")}<section class="panel goal"><div class="row"><div><div class="big">${Math.min(t, st.goal)} από ${st.goal}</div><div class="hint">ιδέες σήμερα</div></div>
    <div style="text-align:right"><div class="big">${streak()}</div><div class="hint">${streak() === 1 ? "μέρα" : "μέρες"} σερί</div></div></div>
    <div class="segs">${Array.from({ length: st.goal }, (_, i) => `<i class="${i < t ? "on" : ""}"></i>`).join("")}</div>
@@ -223,8 +236,9 @@ function observe() { if (io) io.disconnect(); if (!("IntersectionObserver" in wi
 /* ---------------- READER ---------------- */
 const R = { list: [], i: 0, auto: false };
 function openReader(list, i = 0, auto = false) { if (!list.length) return; R.list = list.map(x => x.id); R.i = i; R.auto = auto; $("#reader").hidden = false; document.body.style.overflow = "hidden"; showR(); if (auto) speakR() }
-function showR() { const x = getIdea(R.list[R.i]);
-  $("#rbody").innerHTML = `<div class="wrap"><div class="src">${esc(x.src.topic)}</div><h2>${esc(x.h)}</h2><p>${esc(x.b)}</p><div class="au">${esc(x.src.t)}${x.src.a ? " · " + esc(x.src.a) : ""}</div></div>`;
+function showR() { const x = getIdea(R.list[R.i]), t = themeOf(x);
+  $("#reader").className = "reader themed t-" + t.slug;
+  $("#rbody").innerHTML = `<div class="wrap"><div class="rbig" aria-hidden="true">${String(R.i + 1).padStart(2, "0")}</div><div class="src">${esc(x.src.topic)}</div><h2>${esc(x.h)}</h2><p>${esc(x.b)}</p><div class="au">${esc(x.src.t)}${x.src.a ? " · " + esc(x.src.a) : ""}</div></div>`;
   $("#rbody").scrollTop = 0; $("#rpos").textContent = (R.i + 1) + " / " + R.list.length; const sv = isSaved(x.id); $("#rsave").textContent = sv ? "Κρατημένη" : "Κράτα"; $("#rsave").setAttribute("aria-pressed", sv);
   $("#rauto").setAttribute("aria-pressed", R.auto); syncSpeakUI(); clearTimeout(R.t); R.t = setTimeout(() => markRead(x.id), 1500) }
 function stepR(d) { const n = R.i + d; if (n < 0 || n >= R.list.length) { if (n >= R.list.length) { toast("Τέλος λίστας."); if (R.auto) { R.auto = false; $("#rauto").setAttribute("aria-pressed", false) } } return false } R.i = n; showR(); return true }
@@ -233,6 +247,25 @@ function closeR() { $("#reader").hidden = true; document.body.style.overflow = "
 let x0 = null; $("#rbody").addEventListener("touchstart", e => x0 = e.touches[0].clientX, { passive: true });
 $("#rbody").addEventListener("touchend", e => { if (x0 === null) return; const dx = e.changedTouches[0].clientX - x0; if (Math.abs(dx) > 60) { stopSpeak(); R.auto = false; stepR(dx < 0 ? 1 : -1) } x0 = null });
 document.addEventListener("keydown", e => { if ($("#reader").hidden) return; if (e.key === "ArrowRight") stepR(1); if (e.key === "ArrowLeft") stepR(-1); if (e.key === "Escape") closeR() });
+
+/* ---------------- SHARE AS IMAGE ---------------- */
+let sharing = false;
+async function shareImage(x) {
+  if (sharing) return; sharing = true;
+  try {
+    const t = themeOf(x);
+    const blob = await NousStory.render({ topic: x.src.topic, title: x.h, body: x.b, book: x.src.t, author: x.src.a,
+      label: x.id === dailyId ? "Η ιδέα της ημέρας" : "Ideas worth keeping", glyph: t.glyph, colors: t.dark });
+    const file = new File([blob], "nous-" + x.id + ".png", { type: "image/png" });
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      try { await navigator.share({ files: [file], title: x.h }) } catch (e) { if (e.name !== "AbortError") throw e }
+    } else {
+      const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = file.name; a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 1000); toast("Η εικόνα κατέβηκε.");
+    }
+  } catch (e) { toast("Δεν φτιάχτηκε η εικόνα.") }
+  sharing = false;
+}
 
 /* ---------------- SHEETS ---------------- */
 let sheetId = null;
@@ -284,6 +317,8 @@ const A = {
     a.href = URL.createObjectURL(blob); a.download = "nous-" + today() + ".json"; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000) },
   import: () => $("#importfile").click(),
   reset: () => { if (confirmKey !== "reset") { confirmKey = "reset"; render(); return } st.read = {}; st.log = {}; confirmKey = null; changed(); render(); toast("Η πρόοδος μηδενίστηκε.") },
+  shareimg: b => shareImage(getIdea(b.dataset.id)),
+  rshare: () => shareImage(getIdea(R.list[R.i])),
   rclose: closeR, rprev: () => { stopSpeak(); R.auto = false; stepR(-1) }, rnext: () => { stopSpeak(); R.auto = false; stepR(1) },
   rlisten: () => { if (speakingId === R.list[R.i]) { stopSpeak(); R.auto = false; $("#rauto").setAttribute("aria-pressed", false) } else speakR() },
   rauto: () => { R.auto = !R.auto; $("#rauto").setAttribute("aria-pressed", R.auto); if (R.auto) speakR(); else stopSpeak() },

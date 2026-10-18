@@ -3,8 +3,10 @@
    a unique stable id on every card, and that journeys and the legacy map point at cards that exist.
    content/published-ids.json records every card id ever published: none may disappear from the content
    unless it is listed under "retired". When the check passes, new ids are added to that list.
+   Every topic also needs a colour theme in js/themes.js with readable contrast in light and dark mode.
    Usage: node tools/check-content.js [--dry-run]   (--dry-run: check only, never write the list) */
 const fs = require("fs"), path = require("path");
+const { THEMES, contrast } = require("../js/themes.js");
 const dir = path.join(__dirname, "..", "content");
 const PUBLISHED = "published-ids.json";
 const dryRun = process.argv.includes("--dry-run");
@@ -17,9 +19,19 @@ const special = new Set(["index.json", index.journeys, index.legacy, PUBLISHED])
 const onDisk = fs.readdirSync(dir).filter(f => f.endsWith(".json") && !special.has(f));
 for (const f of onDisk) if (!index.topics.includes(f)) errors.push(`${f} υπάρχει αλλά λείπει από το index.json`);
 
+/* Text needs 7:1 against its background; accent and secondary text need 4.5:1 (WCAG AA/AAA). */
+function checkTheme(f, topic) {
+  const t = THEMES[topic];
+  if (!t) { errors.push(`${f}: το θέμα «${topic}» δεν έχει χρώματα στο js/themes.js`); return }
+  for (const mode of ["light", "dark"]) for (const [k, min] of [["fg", 7], ["ac", 4.5], ["mu", 4.5]]) {
+    const c = contrast(t[mode][k], t[mode].bg);
+    if (c < min) errors.push(`js/themes.js: «${topic}» (${mode}) ${k} έχει αντίθεση ${c.toFixed(2)}:1, χρειάζεται ${min}:1`);
+  }
+}
+
 for (const f of index.topics) {
   let data; try { data = read(f) } catch (e) { errors.push(`${f}: ${e.message}`); continue }
-  if (!data.topic) errors.push(`${f}: λείπει το "topic"`);
+  if (!data.topic) errors.push(`${f}: λείπει το "topic"`); else checkTheme(f, data.topic);
   for (const s of data.sources || []) {
     if (!s.id || !s.title) errors.push(`${f}: πηγή χωρίς id ή title`);
     if (srcIds.has(s.id)) errors.push(`${f}: διπλό id πηγής "${s.id}"`);

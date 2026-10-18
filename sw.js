@@ -1,6 +1,6 @@
 /* Nous service worker: offline cache + daily reminder. Bump VERSION when the app shell changes. */
-const VERSION = "nous-v2";
-const SHELL = ["./", "index.html", "css/app.css", "js/store.js", "js/app.js", "manifest.webmanifest",
+const VERSION = "nous-v3";
+const SHELL = ["./", "index.html", "css/app.css", "js/store.js", "js/themes.js", "js/story.js", "js/app.js", "manifest.webmanifest",
   "icons/favicon-48.png", "icons/badge-96.png", "icons/icon-192.png", "icons/icon-512.png", "content/index.json"];
 importScripts("js/store.js");
 
