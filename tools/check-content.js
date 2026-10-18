@@ -5,13 +5,14 @@
    unless it is listed under "retired". When the check passes, new ids are added to that list.
    Every topic also needs a colour theme in js/themes.js with readable contrast in light and dark mode.
    Finally every card must fit the Instagram carousel and the app story (via tools/make-posts.js --check).
-   Usage: node tools/check-content.js [--dry-run] [--no-fit]
-     --dry-run: check only, never write the list · --no-fit: skip the size check (needs Chrome or Edge) */
+   Usage: node tools/check-content.js [--dry-run] [--no-fit] [--pre-push]
+     --dry-run: check only, never write the list · --no-fit: skip the size check (needs Chrome or Edge)
+     --pre-push: like --dry-run, but fail if new ids are not recorded yet (used by .githooks/pre-push) */
 const fs = require("fs"), path = require("path"), { spawnSync } = require("child_process");
 const { THEMES, contrast } = require("../js/themes.js");
 const dir = path.join(__dirname, "..", "content");
 const PUBLISHED = "published-ids.json";
-const dryRun = process.argv.includes("--dry-run"), noFit = process.argv.includes("--no-fit");
+const prePush = process.argv.includes("--pre-push"), dryRun = prePush || process.argv.includes("--dry-run"), noFit = process.argv.includes("--no-fit");
 const read = f => JSON.parse(fs.readFileSync(path.join(dir, f), "utf8"));
 const ID = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 const errors = [], ids = new Map(), srcIds = new Set();
@@ -92,6 +93,11 @@ console.log(`OK: ${index.topics.length} θέματα, ${srcIds.size} πηγές,
 /* Record the new ids, keeping the existing order and appending the rest. */
 const added = [...ids.keys()].filter(id => !published.has(id));
 if (!added.length) process.exit(0);
+if (prePush) {
+  console.error(`${plural(added.length, "νέο id δεν έχει", "νέα ids δεν έχουν")} καταγραφεί στο ${PUBLISHED}: ${added.join(", ")}` +
+    `\nΤρέξε node tools/check-content.js, κάνε commit το content/${PUBLISHED} και ξαναδοκίμασε το push.`);
+  process.exit(1);
+}
 if (dryRun) { console.log(`${plural(added.length, "νέο id δεν έχει", "νέα ids δεν έχουν")} καταγραφεί ακόμα στο ${PUBLISHED} (--dry-run).`); process.exit(0) }
 const out = { published: [...pub.published, ...added], retired };
 fs.writeFileSync(path.join(dir, PUBLISHED), JSON.stringify(out, null, 2) + "\n");

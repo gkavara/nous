@@ -1,0 +1,24 @@
+#!/bin/sh
+# Nous pre-push: runs the full content check (ids, journeys, colours, card sizes) before every push.
+# Enable once per clone:  git config core.hooksPath .githooks
+# Skip in an emergency:   git push --no-verify
+# It checks the working tree, so commit everything you mean to push first.
+
+cd "$(git rev-parse --show-toplevel)" || exit 1
+
+if ! command -v node >/dev/null 2>&1; then
+  echo "pre-push: δεν βρέθηκε το Node.js, ο έλεγχος περιεχομένου δεν έτρεξε." >&2
+  exit 1
+fi
+
+if [ -n "$(git status --porcelain -- content js tools fonts)" ]; then
+  echo "pre-push: προσοχή, υπάρχουν αλλαγές χωρίς commit στα content/, js/, tools/ ή fonts/." >&2
+  echo "          Ο έλεγχος τρέχει σε ό,τι βλέπει στον φάκελο, όχι μόνο σε ό,τι ανεβαίνει." >&2
+fi
+
+echo "pre-push: έλεγχος περιεχομένου..."
+if ! node tools/check-content.js --pre-push; then
+  echo "" >&2
+  echo "pre-push: το push σταμάτησε. Διόρθωσε τα παραπάνω (ή, μόνο αν χρειάζεται, git push --no-verify)." >&2
+  exit 1
+fi
