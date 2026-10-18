@@ -15,7 +15,8 @@
    --theme <θέμα>           χρώμα του carousel (προεπιλογή: το θέμα της πρώτης κάρτας)
    --out <φάκελος>          όνομα φακέλου μέσα στο posts/ (προεπιλογή: <θέμα>-<ημερομηνία>)
    --browser <path>         Chrome/Edge, αν δεν βρίσκεται μόνο του
-   --check                  μόνο έλεγχος ότι χωράει το κείμενο, χωρίς εικόνες. Χωρίς --topic/--ids ελέγχει όλες τις κάρτες.
+   --check                  μόνο έλεγχος ότι χωράει το κείμενο σε carousel και στο story της εφαρμογής, χωρίς εικόνες.
+                            Χωρίς --topic/--ids ελέγχει όλες τις κάρτες. Το καλεί και το tools/check-content.js.
 
    Αν το κείμενο δεν χωράει, μικραίνει μαζί με τον τίτλο μέχρι 36px. Αν πάλι δεν χωράει, σταματά και λέει ποια κάρτα. */
 const fs = require("fs"), path = require("path"), os = require("os"), { spawn } = require("child_process");
@@ -158,12 +159,23 @@ async function render(htmlFile, outDir) {
     const r = await send("Runtime.evaluate", { expression: LAYOUT, awaitPromise: true, returnByValue: true });
     const { fonts, boxes, overflow, sizes } = r.result.value;
     if (!fonts) throw new Error("Δεν φορτώθηκαν οι γραμματοσειρές από το fonts/ (fonts/fonts.css και τα .woff2).");
-    if (overflow.length) {
-      const what = i => i === 0 ? "Το εξώφυλλο (μίκρυνε το --title ή το --subtitle)" : i === n + 1 ? "Το κλείσιμο (μίκρυνε το --question ή το --cta)"
-        : `Η κάρτα «${list[i - 1].h}» (${list[i - 1].id}, ${list[i - 1].topic}, ${list[i - 1].b.length} χαρακτήρες)`;
-      throw new Error(overflow.map(i => what(i) + ` δεν χωράει ούτε με κείμενο ${MIN_TEXT}px.`).join("\n") +
-        `\n\n${overflow.length === 1 ? "1 εικόνα δεν χωράει" : overflow.length + " εικόνες δεν χωρούν"}. Συντόμευσε το κείμενο της κάρτας στο content/.`);
+    // With --check, also test the app's story image (js/story.js, 1080x1920) for the same cards.
+    let story = [];
+    if (check) {
+      const sr = await send("Runtime.evaluate", { awaitPromise: true, returnByValue: true, expression: `(async () => {
+        const cards = ${JSON.stringify(list.map(c => ({ id: c.id, title: c.h, body: c.b, book: c.title, author: c.author })))}, bad = [];
+        for (const c of cards) if (!(await NousStory.fits(c))) bad.push(c.id);
+        return bad })()` });
+      if (sr.exceptionDetails || !Array.isArray(sr.result.value)) throw new Error("Ο έλεγχος του story απέτυχε: " + ((sr.exceptionDetails && sr.exceptionDetails.exception && sr.exceptionDetails.exception.description) || "άγνωστο σφάλμα"));
+      story = sr.result.value.map(id => list.findIndex(c => c.id === id));
     }
+    const card = c => `«${c.h}» (${c.id}, ${c.topic}, ${c.b.length} χαρακτήρες)`;
+    const what = i => i === 0 ? "Το εξώφυλλο (μίκρυνε το --title ή το --subtitle)" : i === n + 1 ? "Το κλείσιμο (μίκρυνε το --question ή το --cta)"
+      : `Η κάρτα ${card(list[i - 1])}`;
+    const problems = [...overflow.map(i => what(i) + ` δεν χωράει στο carousel ούτε με κείμενο ${MIN_TEXT}px.`),
+      ...story.map(i => `Η κάρτα ${card(list[i])} δεν χωράει στο story της εφαρμογής ούτε με κείμενο ${MIN_TEXT}px.`)];
+    if (problems.length)
+      throw new Error(problems.join("\n") + `\n\n${problems.length === 1 ? "1 εικόνα δεν χωράει" : problems.length + " εικόνες δεν χωρούν"}. Συντόμευσε το κείμενο της κάρτας στο content/.`);
     const shrunk = sizes.map((v, i) => [v, i]).filter(([v, i]) => v && v < 40 && i > 0 && i <= n);
     if (shrunk.length) console.log(shrunk.map(([v, i]) => `Μικρότερο κείμενο (${v}px): «${list[i - 1].h}» (${list[i - 1].id})`).join("\n"));
     if (check) { ws.close(); return [] }
@@ -184,9 +196,9 @@ async function render(htmlFile, outDir) {
 (async () => {
   if (check) {
     const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "nous-check-")), htmlFile = path.join(tmp, "check.html");
-    fs.writeFileSync(htmlFile, html);
+    fs.writeFileSync(htmlFile, html.replace("</body>", `<script src="${pathToFileURL(path.join(ROOT, "js", "story.js")).href}"></script></body>`));
     try { await render(htmlFile, tmp) } finally { fs.rmSync(tmp, { recursive: true, force: true }) }
-    console.log(`OK: ${n === 1 ? "χωράει η κάρτα" : `χωράνε και οι ${n} κάρτες`} (κείμενο τουλάχιστον ${MIN_TEXT}px).`);
+    console.log(`OK: ${n === 1 ? "χωράει η κάρτα" : `χωράνε και οι ${n} κάρτες`} σε carousel και story (κείμενο τουλάχιστον ${MIN_TEXT}px).`);
     return;
   }
   const name = args.out || `${th.slug}-${new Date().toISOString().slice(0, 10)}`;

@@ -4,12 +4,14 @@
    content/published-ids.json records every card id ever published: none may disappear from the content
    unless it is listed under "retired". When the check passes, new ids are added to that list.
    Every topic also needs a colour theme in js/themes.js with readable contrast in light and dark mode.
-   Usage: node tools/check-content.js [--dry-run]   (--dry-run: check only, never write the list) */
-const fs = require("fs"), path = require("path");
+   Finally every card must fit the Instagram carousel and the app story (via tools/make-posts.js --check).
+   Usage: node tools/check-content.js [--dry-run] [--no-fit]
+     --dry-run: check only, never write the list · --no-fit: skip the size check (needs Chrome or Edge) */
+const fs = require("fs"), path = require("path"), { spawnSync } = require("child_process");
 const { THEMES, contrast } = require("../js/themes.js");
 const dir = path.join(__dirname, "..", "content");
 const PUBLISHED = "published-ids.json";
-const dryRun = process.argv.includes("--dry-run");
+const dryRun = process.argv.includes("--dry-run"), noFit = process.argv.includes("--no-fit");
 const read = f => JSON.parse(fs.readFileSync(path.join(dir, f), "utf8"));
 const ID = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 const errors = [], ids = new Map(), srcIds = new Set();
@@ -69,8 +71,23 @@ const exists = id => ids.has(id) || id in retired;
 for (const j of read(index.journeys)) for (const id of j.ideas) if (!ids.has(id)) errors.push(`Διαδρομή "${j.id}": δεν υπάρχει κάρτα με id "${id}"${id in retired ? " (είναι αποσυρμένη)" : ""}`);
 if (index.legacy) for (const [old, id] of Object.entries(read(index.legacy))) if (!exists(id) && !published.has(id)) errors.push(`${index.legacy}: το "${old}" δείχνει σε ανύπαρκτο id "${id}"`);
 
-if (errors.length) { console.error(errors.join("\n")); console.error(`\n${plural(errors.length, "σφάλμα", "σφάλματα")}.`); process.exit(1) }
-console.log(`OK: ${index.topics.length} θέματα, ${srcIds.size} πηγές, ${ids.size} κάρτες, ${plural(Object.keys(retired).length, "αποσυρμένη", "αποσυρμένες")}.`);
+/* Size: every card must fit the Instagram carousel and the app's story image (tools/make-posts.js --check,
+   headless Chrome/Edge). Runs only on otherwise valid content; --no-fit skips it. */
+let fitNote = "";
+if (noFit) fitNote = " Ο έλεγχος μεγέθους παραλείφθηκε (--no-fit).";
+else if (errors.length) fitNote = " Ο έλεγχος μεγέθους δεν έτρεξε, διόρθωσε πρώτα τα παραπάνω.";
+else {
+  const r = spawnSync(process.execPath, [path.join(__dirname, "make-posts.js"), "--check"], { encoding: "utf8" });
+  // One error per line, up to the blank line before make-posts' own summary.
+  const out = (r.stderr || "").replace(/\r/g, "").split("\n\n")[0].split("\n").map(l => l.trim()).filter(l => l && !l.startsWith("Δες τις οδηγίες"));
+  if (r.status !== 0) {
+    errors.push(...(out.length ? out : [`Ο έλεγχος μεγέθους απέτυχε (${r.error ? r.error.message : "κωδικός " + r.status}).`]));
+    if (/Chrome ή Edge/.test(out.join(" "))) errors.push("Αν δεν έχεις browser εδώ, τρέξε με --no-fit για να παραλείψεις τον έλεγχο μεγέθους.");
+  } else fitNote = " " + (r.stdout.trim().split("\n").pop() || "").replace(/^OK: /, "Μέγεθος: ");
+}
+
+if (errors.length) { console.error(errors.join("\n")); console.error(`\n${plural(errors.length, "σφάλμα", "σφάλματα")}.${fitNote}`); process.exit(1) }
+console.log(`OK: ${index.topics.length} θέματα, ${srcIds.size} πηγές, ${ids.size} κάρτες, ${plural(Object.keys(retired).length, "αποσυρμένη", "αποσυρμένες")}.${fitNote}`);
 
 /* Record the new ids, keeping the existing order and appending the rest. */
 const added = [...ids.keys()].filter(id => !published.has(id));
