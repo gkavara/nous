@@ -5,6 +5,7 @@
       "id": "carnegie",
       "title": "Πώς να κερδίζετε φίλους",
       "author": "Dale Carnegie",
+      "authorGenitive": "του Dale Carnegie",
       "ideas": [
         {
           "id": "carnegie-endiaferon-gia-ton-allon",
@@ -32,6 +33,7 @@
       "id": "covey",
       "title": "Οι 7 συνήθειες των πολύ αποτελεσματικών ανθρώπων",
       "author": "Stephen Covey",
+      "authorGenitive": "του Stephen Covey",
       "ideas": [
         {
           "id": "covey-na-eisai-pronoitikos",
@@ -74,6 +76,7 @@
       "id": "gottman",
       "title": "Οι επτά αρχές για έναν πετυχημένο γάμο",
       "author": "John Gottman",
+      "authorGenitive": "του John Gottman",
       "ideas": [
         {
           "id": "gottman-pente-pros-ena",
@@ -96,6 +99,7 @@
       "id": "goodlife",
       "title": "Η καλή ζωή",
       "author": "Robert Waldinger, Marc Schulz",
+      "authorGenitive": "των Robert Waldinger και Marc Schulz",
       "ideas": [
         {
           "id": "goodlife-oi-scheseis-provlepoyn-tin-eytychia",
@@ -118,6 +122,7 @@
       "id": "brown",
       "title": "Daring Greatly",
       "author": "Brené Brown",
+      "authorGenitive": "της Brené Brown",
       "ideas": [
         {
           "id": "brown-i-eyalototita-os-tharros",
@@ -140,6 +145,7 @@
       "id": "nvc",
       "title": "Μη βίαιη επικοινωνία",
       "author": "Marshall Rosenberg",
+      "authorGenitive": "του Marshall Rosenberg",
       "ideas": [
         {
           "id": "nvc-paratirisi-choris-krisi",

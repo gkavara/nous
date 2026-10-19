@@ -5,6 +5,7 @@
       "id": "ownership",
       "title": "Extreme Ownership",
       "author": "Jocko Willink, Leif Babin",
+      "authorGenitive": "των Jocko Willink και Leif Babin",
       "ideas": [
         {
           "id": "ownership-apolyti-eythyni",
@@ -27,6 +28,7 @@
       "id": "sinek",
       "title": "Start With Why",
       "author": "Simon Sinek",
+      "authorGenitive": "του Simon Sinek",
       "ideas": [
         {
           "id": "sinek-xekina-apo-to-giati",
@@ -44,6 +46,7 @@
       "id": "grove",
       "title": "High Output Management",
       "author": "Andy Grove",
+      "authorGenitive": "του Andy Grove",
       "ideas": [
         {
           "id": "grove-mochleysi",

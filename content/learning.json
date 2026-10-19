@@ -5,6 +5,7 @@
       "id": "stick",
       "title": "Make It Stick",
       "author": "Brown, Roediger, McDaniel",
+      "authorGenitive": "των Brown, Roediger και McDaniel",
       "ideas": [
         {
           "id": "stick-energi-anaklisi",
@@ -32,6 +33,7 @@
       "id": "feynman",
       "title": "Τεχνικές γρήγορης μάθησης",
       "author": "Richard Feynman, Scott Young",
+      "authorGenitive": "των Richard Feynman και Scott Young",
       "ideas": [
         {
           "id": "feynman-exigise-to-apla",

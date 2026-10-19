@@ -5,6 +5,7 @@
       "id": "lean",
       "title": "The Lean Startup",
       "author": "Eric Ries",
+      "authorGenitive": "του Eric Ries",
       "ideas": [
         {
           "id": "lean-elachisto-viosimo-proion",
@@ -32,6 +33,7 @@
       "id": "thiel",
       "title": "Zero to One",
       "author": "Peter Thiel",
+      "authorGenitive": "του Peter Thiel",
       "ideas": [
         {
           "id": "thiel-apo-to-0-sto-1",
@@ -59,6 +61,7 @@
       "id": "christensen",
       "title": "Το δίλημμα του καινοτόμου",
       "author": "Clayton Christensen",
+      "authorGenitive": "του Clayton Christensen",
       "ideas": [
         {
           "id": "christensen-i-diaspasi-apo-kato",
@@ -81,6 +84,7 @@
       "id": "rework",
       "title": "Rework",
       "author": "Jason Fried, David Heinemeier Hansson",
+      "authorGenitive": "των Jason Fried και David Heinemeier Hansson",
       "ideas": [
         {
           "id": "rework-o-schediasmos-einai-mantepsia",
@@ -108,6 +112,7 @@
       "id": "creators",
       "title": "Δημιουργοί και μικρές επιχειρήσεις",
       "author": "Kevin Kelly, Vilfredo Pareto",
+      "authorGenitive": "των Kevin Kelly και Vilfredo Pareto",
       "ideas": [
         {
           "id": "creators-1-000-pragmatikoi-thaymastes",

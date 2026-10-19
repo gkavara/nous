@@ -5,6 +5,7 @@
       "id": "kleon",
       "title": "Steal Like an Artist",
       "author": "Austin Kleon",
+      "authorGenitive": "του Austin Kleon",
       "ideas": [
         {
           "id": "kleon-klepse-san-kallitechnis",
@@ -32,6 +33,7 @@
       "id": "pressfield",
       "title": "The War of Art",
       "author": "Steven Pressfield",
+      "authorGenitive": "του Steven Pressfield",
       "ideas": [
         {
           "id": "pressfield-i-antistasi",
@@ -54,6 +56,7 @@
       "id": "lamott",
       "title": "Bird by Bird",
       "author": "Anne Lamott",
+      "authorGenitive": "της Anne Lamott",
       "ideas": [
         {
           "id": "lamott-poyli-poyli",
@@ -76,6 +79,7 @@
       "id": "jobs",
       "title": "Ομιλία στο Stanford, 2005",
       "author": "Steve Jobs",
+      "authorGenitive": "του Steve Jobs",
       "ideas": [
         {
           "id": "jobs-enonontas-tis-teleies",

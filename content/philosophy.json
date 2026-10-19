@@ -5,6 +5,7 @@
       "id": "apology",
       "title": "Απολογία Σωκράτους",
       "author": "Πλάτων",
+      "authorGenitive": "του Πλάτωνα",
       "ideas": [
         {
           "id": "apology-o-anexetastos-vios",
@@ -32,6 +33,7 @@
       "id": "ethics",
       "title": "Ηθικά Νικομάχεια",
       "author": "Αριστοτέλης",
+      "authorGenitive": "του Αριστοτέλη",
       "ideas": [
         {
           "id": "ethics-i-mesotis",
@@ -64,6 +66,7 @@
       "id": "epicurus",
       "title": "Επιστολή προς Μενοικέα",
       "author": "Επίκουρος",
+      "authorGenitive": "του Επίκουρου",
       "ideas": [
         {
           "id": "epicurus-oi-aples-idones",
@@ -96,6 +99,7 @@
       "id": "republic",
       "title": "Πολιτεία",
       "author": "Πλάτων",
+      "authorGenitive": "του Πλάτωνα",
       "ideas": [
         {
           "id": "republic-i-alligoria-toy-spilaioy",
@@ -118,6 +122,7 @@
       "id": "nietzsche",
       "title": "Έργα",
       "author": "Φρίντριχ Νίτσε",
+      "authorGenitive": "του Φρίντριχ Νίτσε",
       "ideas": [
         {
           "id": "nietzsche-amor-fati",
@@ -145,6 +150,7 @@
       "id": "camus",
       "title": "Ο μύθος του Σισύφου",
       "author": "Αλμπέρ Καμύ",
+      "authorGenitive": "του Αλμπέρ Καμύ",
       "ideas": [
         {
           "id": "camus-to-paralogo",

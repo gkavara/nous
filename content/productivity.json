@@ -5,6 +5,7 @@
       "id": "deepwork",
       "title": "Deep Work",
       "author": "Cal Newport",
+      "authorGenitive": "του Cal Newport",
       "ideas": [
         {
           "id": "deepwork-vathia-kai-richi-doyleia",
@@ -32,6 +33,7 @@
       "id": "gtd",
       "title": "Getting Things Done",
       "author": "David Allen",
+      "authorGenitive": "του David Allen",
       "ideas": [
         {
           "id": "gtd-adeiase-to-kefali",
@@ -59,6 +61,7 @@
       "id": "essentialism",
       "title": "Essentialism",
       "author": "Greg McKeown",
+      "authorGenitive": "του Greg McKeown",
       "ideas": [
         {
           "id": "essentialism-ligotera-alla-kalytera",
@@ -81,6 +84,7 @@
       "id": "burkeman",
       "title": "4.000 εβδομάδες",
       "author": "Oliver Burkeman",
+      "authorGenitive": "του Oliver Burkeman",
       "ideas": [
         {
           "id": "burkeman-tesseris-chiliades-evdomades",
@@ -103,6 +107,7 @@
       "id": "timerules",
       "title": "Κλασικοί κανόνες χρόνου",
       "author": "Eisenhower, Parkinson, Brian Tracy",
+      "authorGenitive": "των Eisenhower, Parkinson και Brian Tracy",
       "ideas": [
         {
           "id": "timerules-epeigon-i-simantiko",

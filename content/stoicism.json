@@ -5,6 +5,7 @@
       "id": "meditations",
       "title": "Τα εις εαυτόν",
       "author": "Μάρκος Αυρήλιος",
+      "authorGenitive": "του Μάρκου Αυρήλιου",
       "ideas": [
         {
           "id": "meditations-proini-proetoimasia",
@@ -42,6 +43,7 @@
       "id": "enchiridion",
       "title": "Εγχειρίδιον",
       "author": "Επίκτητος",
+      "authorGenitive": "του Επίκτητου",
       "ideas": [
         {
           "id": "enchiridion-ti-exartatai-apo-sena",
@@ -74,6 +76,7 @@
       "id": "seneca",
       "title": "Επιστολές στον Λουκίλιο",
       "author": "Σενέκας",
+      "authorGenitive": "του Σενέκα",
       "ideas": [
         {
           "id": "seneca-ypoferoyme-sti-fantasia",
@@ -106,6 +109,7 @@
       "id": "shortness",
       "title": "Περί βραχύτητος του βίου",
       "author": "Σενέκας",
+      "authorGenitive": "του Σενέκα",
       "ideas": [
         {
           "id": "shortness-i-zoi-den-einai-syntomi",
@@ -133,6 +137,7 @@
       "id": "holiday",
       "title": "Το εμπόδιο είναι ο δρόμος",
       "author": "Ryan Holiday",
+      "authorGenitive": "του Ryan Holiday",
       "ideas": [
         {
           "id": "holiday-antilipsi-drasi-thelisi",

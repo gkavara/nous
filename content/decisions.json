@@ -5,6 +5,7 @@
       "id": "munger",
       "title": "Poor Charlie's Almanack",
       "author": "Charlie Munger",
+      "authorGenitive": "του Charlie Munger",
       "ideas": [
         {
           "id": "munger-antistrofi",
@@ -32,6 +33,7 @@
       "id": "marks",
       "title": "The Most Important Thing",
       "author": "Howard Marks",
+      "authorGenitive": "του Howard Marks",
       "ideas": [
         {
           "id": "marks-skepsi-deyteroy-vathmoy",
@@ -54,6 +56,7 @@
       "id": "duke",
       "title": "Thinking in Bets",
       "author": "Annie Duke",
+      "authorGenitive": "της Annie Duke",
       "ideas": [
         {
           "id": "duke-apofasi-den-einai-apotelesma",
@@ -76,6 +79,7 @@
       "id": "bezos",
       "title": "Επιστολές στους μετόχους",
       "author": "Jeff Bezos",
+      "authorGenitive": "του Jeff Bezos",
       "ideas": [
         {
           "id": "bezos-portes-diplis-kateythynsis",

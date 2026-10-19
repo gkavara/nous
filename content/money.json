@@ -5,6 +5,7 @@
       "id": "buffett",
       "title": "Επιστολές της Berkshire Hathaway",
       "author": "Warren Buffett",
+      "authorGenitive": "του Warren Buffett",
       "ideas": [
         {
           "id": "buffett-kyklos-ikanotitas",
@@ -37,6 +38,7 @@
       "id": "graham",
       "title": "Ο ευφυής επενδυτής",
       "author": "Benjamin Graham",
+      "authorGenitive": "του Benjamin Graham",
       "ideas": [
         {
           "id": "graham-o-kyrios-agora",
@@ -64,6 +66,7 @@
       "id": "housel",
       "title": "Η ψυχολογία του χρήματος",
       "author": "Morgan Housel",
+      "authorGenitive": "του Morgan Housel",
       "ideas": [
         {
           "id": "housel-arketo",
@@ -101,6 +104,7 @@
       "id": "babylon",
       "title": "Ο πλουσιότερος άνθρωπος της Βαβυλώνας",
       "author": "George Clason",
+      "authorGenitive": "του George Clason",
       "ideas": [
         {
           "id": "babylon-plirose-prota-ton-eayto-soy",
@@ -128,6 +132,7 @@
       "id": "bitcoin-std",
       "title": "Το πρότυπο του Bitcoin",
       "author": "Saifedean Ammous",
+      "authorGenitive": "του Saifedean Ammous",
       "ideas": [
         {
           "id": "bitcoin-std-skliro-kai-malako-chrima",

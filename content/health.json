@@ -5,6 +5,7 @@
       "id": "sleep",
       "title": "Γιατί κοιμόμαστε",
       "author": "Matthew Walker",
+      "authorGenitive": "του Matthew Walker",
       "ideas": [
         {
           "id": "sleep-o-ypnos-den-einai-polyteleia",
@@ -32,6 +33,7 @@
       "id": "running",
       "title": "80/20 Running",
       "author": "Matt Fitzgerald",
+      "authorGenitive": "του Matt Fitzgerald",
       "ideas": [
         {
           "id": "running-arga-gia-na-pas-grigora",
@@ -54,6 +56,7 @@
       "id": "outlive",
       "title": "Outlive",
       "author": "Peter Attia",
+      "authorGenitive": "του Peter Attia",
       "ideas": [
         {
           "id": "outlive-prolipsi-prin-apo-therapeia",
@@ -81,6 +84,7 @@
       "id": "spark",
       "title": "Spark",
       "author": "John Ratey",
+      "authorGenitive": "του John Ratey",
       "ideas": [
         {
           "id": "spark-i-kinisi-trefei-ton-egkefalo",

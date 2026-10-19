@@ -5,6 +5,7 @@
       "id": "atomic",
       "title": "Atomic Habits",
       "author": "James Clear",
+      "authorGenitive": "του James Clear",
       "ideas": [
         {
           "id": "atomic-to-1pct-kathe-mera",
@@ -47,6 +48,7 @@
       "id": "duhigg",
       "title": "Η δύναμη της συνήθειας",
       "author": "Charles Duhigg",
+      "authorGenitive": "του Charles Duhigg",
       "ideas": [
         {
           "id": "duhigg-o-vrochos-tis-synitheias",
@@ -79,6 +81,7 @@
       "id": "tiny",
       "title": "Tiny Habits",
       "author": "BJ Fogg",
+      "authorGenitive": "του BJ Fogg",
       "ideas": [
         {
           "id": "tiny-symperifora-kinitro-ikanotita-enaysma",

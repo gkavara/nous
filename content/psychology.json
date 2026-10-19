@@ -5,6 +5,7 @@
       "id": "frankl",
       "title": "Αναζήτηση νοήματος",
       "author": "Viktor Frankl",
+      "authorGenitive": "του Viktor Frankl",
       "ideas": [
         {
           "id": "frankl-i-teleytaia-eleytheria",
@@ -37,6 +38,7 @@
       "id": "flow",
       "title": "Flow",
       "author": "Mihaly Csikszentmihalyi",
+      "authorGenitive": "του Mihaly Csikszentmihalyi",
       "ideas": [
         {
           "id": "flow-roi",
@@ -64,6 +66,7 @@
       "id": "mindset",
       "title": "Mindset",
       "author": "Carol Dweck",
+      "authorGenitive": "της Carol Dweck",
       "ideas": [
         {
           "id": "mindset-statheri-i-anaptyssomeni",
@@ -91,6 +94,7 @@
       "id": "kahneman",
       "title": "Σκέψη, αργή και γρήγορη",
       "author": "Daniel Kahneman",
+      "authorGenitive": "του Daniel Kahneman",
       "ideas": [
         {
           "id": "kahneman-dyo-systimata",
@@ -128,6 +132,7 @@
       "id": "cialdini",
       "title": "Η ψυχολογία της πειθούς",
       "author": "Robert Cialdini",
+      "authorGenitive": "του Robert Cialdini",
       "ideas": [
         {
           "id": "cialdini-amoivaiotita",
@@ -165,6 +170,7 @@
       "id": "haidt",
       "title": "Η υπόθεση της ευτυχίας",
       "author": "Jonathan Haidt",
+      "authorGenitive": "του Jonathan Haidt",
       "ideas": [
         {
           "id": "haidt-o-elefantas-kai-o-anavatis",

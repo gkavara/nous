@@ -15,6 +15,11 @@
    --theme <θέμα>           χρώμα του carousel (προεπιλογή: το θέμα της πρώτης κάρτας)
    --out <φάκελος>          όνομα φακέλου μέσα στο posts/ (προεπιλογή: <θέμα>-<ημερομηνία>)
    --browser <path>         Chrome/Edge, αν δεν βρίσκεται μόνο του
+   --cover photo|classic    στυλ εξωφύλλου (προεπιλογή photo). Το photo βάζει φωτογραφία του θέματος από το assets/photos/
+                            με σκούρο φίλτρο στο χρώμα του θέματος, τίτλο σε Fira Sans Extra Condensed Black (έως 10 λέξεις)
+                            και από κάτω «ιδέα από το <βιβλίο>» ή, με πολλά βιβλία, «ιδέες του <συγγραφέα> και του <συγγραφέα>».
+                            Το classic είναι το εξώφυλλο του tools/ig-template.html. Τα υπόλοιπα slides δεν αλλάζουν.
+   --photo <αρχείο>         συγκεκριμένη φωτογραφία από το assets/photos/ (προεπιλογή: η "primary" του θέματος ή η πρώτη <slug>-*.jpg)
    --check                  μόνο έλεγχος ότι χωράει το κείμενο σε carousel και στο story της εφαρμογής, χωρίς εικόνες.
                             Χωρίς --topic/--ids ελέγχει όλες τις κάρτες. Το καλεί και το tools/check-content.js.
 
@@ -51,7 +56,7 @@ const cards = new Map(), topics = [];
 for (const f of index.topics) {
   const d = JSON.parse(fs.readFileSync(path.join(CONTENT, f), "utf8"));
   topics.push(d.topic);
-  for (const s of d.sources) for (const x of s.ideas) cards.set(x.id, { ...x, topic: d.topic, title: s.title, author: s.author || "" });
+  for (const s of d.sources) for (const x of s.ideas) cards.set(x.id, { ...x, topic: d.topic, title: s.title, author: s.author || "", authorGen: s.authorGenitive || "" });
 }
 const findTopic = q => topics.find(t => t === q || (THEMES[t] && THEMES[t].slug === q) || norm(t) === norm(q));
 const norm = s => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
@@ -73,6 +78,55 @@ if (list.length > MAX_CARDS && !check) die(`Το Instagram δέχεται έως
 
 const mainTopic = args.theme ? (findTopic(args.theme) || die(`Δεν υπάρχει θέμα «${args.theme}».`)) : list[0].topic;
 const th = themeOf(mainTopic), n = list.length;
+
+/* ---------------- PHOTO COVER ----------------
+   Every photo in assets/photos/ has a sidecar <name>.json with source, creator and licence. Only licences that allow
+   commercial use without attribution are accepted, so nothing else can slip into a post. */
+const PHOTOS = path.join(ROOT, "assets", "photos");
+const OK_LICENSES = ["CC0", "Public domain", "Unsplash License", "Pexels License"];
+const MAX_TITLE_WORDS = 10;
+const cover = args.cover || (check ? "classic" : "photo"); // the size check only needs the card slides
+if (!["classic", "photo"].includes(cover)) die(`Το --cover δέχεται classic ή photo, όχι «${cover}».`);
+let photo = null;
+if (cover === "photo") {
+  const files = fs.existsSync(PHOTOS) ? fs.readdirSync(PHOTOS).filter(f => /\.(jpe?g|png|webp)$/i.test(f)).sort() : [];
+  // A topic can have several photos; the one whose sidecar says "primary": true is the default, else the first by name.
+  const own = files.filter(f => f.startsWith(th.slug + "-"));
+  const isPrimary = f => { try { return JSON.parse(fs.readFileSync(path.join(PHOTOS, f.replace(/\.[^.]+$/, ".json")), "utf8")).primary === true } catch (e) { return false } };
+  const file = args.photo ? path.basename(args.photo) : own.find(isPrimary) || own[0];
+  if (!file) die(`Δεν υπάρχει φωτογραφία για το θέμα «${mainTopic}» στο assets/photos/ (όνομα ${th.slug}-*.jpg).`);
+  if (!files.includes(file)) die(`Δεν υπάρχει η φωτογραφία assets/photos/${file}.`);
+  const metaFile = path.join(PHOTOS, file.replace(/\.[^.]+$/, ".json"));
+  if (!fs.existsSync(metaFile)) die(`Λείπει το ${path.relative(ROOT, metaFile)} με πηγή, δημιουργό και άδεια της φωτογραφίας.`);
+  const meta = JSON.parse(fs.readFileSync(metaFile, "utf8"));
+  for (const k of ["source", "url", "creator", "license"]) if (!meta[k]) die(`${path.relative(ROOT, metaFile)}: λείπει το "${k}".`);
+  if (!OK_LICENSES.includes(meta.license)) die(`${path.relative(ROOT, metaFile)}: η άδεια «${meta.license}» δεν επιτρέπεται. Επιτρέπονται: ${OK_LICENSES.join(", ")}.`);
+  photo = { file: path.join(PHOTOS, file), meta };
+
+  const plain = args.title.replace(/\*/g, "");
+  if (/["«»“”„‘’']/.test(plain)) die("Ο τίτλος του φωτογραφικού εξωφύλλου δεν έχει εισαγωγικά: δεν είναι αυτούσιο ρητό.");
+  const words = plain.trim().split(/\s+/).length;
+  if (words > MAX_TITLE_WORDS) die(`Ο τίτλος του φωτογραφικού εξωφύλλου έχει ${words} λέξεις. Το όριο είναι ${MAX_TITLE_WORDS}.`);
+}
+/* Line under the photo title, never in quotes and never signed like a verbatim quote:
+   one book → «ιδέα από το <βιβλίο>»; several books → «ιδέες του <συγγραφέα> και του <συγγραφέα>»,
+   from each source's "authorGenitive" in content/ (e.g. "του Επίκτητου", "της Carol Dweck"). */
+const unquote = s => s.replace(/["«»“”„]/g, "");
+const andList = a => a.length < 2 ? a.join("") : a.slice(0, -1).join(", ") + " και " + a.at(-1);
+const fromBooks = () => {
+  const what = n === 1 ? "ιδέα" : "ιδέες";
+  if (books.length === 1) {
+    // Greek titles have their own gender ("Αναζήτηση νοήματος", "Επιστολές…"), so they read "από το βιβλίο <τίτλος>";
+    // foreign titles stay "από το Atomic Habits".
+    const t = unquote(books[0].title);
+    return `${what} από το ${/^[Ͱ-Ͽἀ-῿]/.test(t) ? "βιβλίο " : ""}<b>${esc(t)}</b>`;
+  }
+  const missing = books.filter(c => !c.authorGen).map(c => c.title);
+  if (missing.length) die(`Λείπει το "authorGenitive" (π.χ. "του Επίκτητου") για: ${missing.join(", ")}.`);
+  const gens = [...new Set(list.map(c => unquote(c.authorGen)))]
+    .map(g => { const [art, ...name] = g.split(" "); return `${art} <b>${esc(name.join(" "))}</b>` });
+  return `${what} ${andList(gens)}`;
+};
 
 /* ---------------- TEXT ---------------- */
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -97,23 +151,43 @@ const vars = `.th{--bg:${th.dark.bg};--fg:${th.dark.fg};--ac:${th.dark.ac};--mu:
 const slide = (top, count, big, mid, foot) => `<div class="s th grain"><div class="top"><span class="tp">${top}</span><span class="ct">${count}</span></div>
   ${big ? `<div class="big">${big}</div>` : ""}<div class="mid">${mid}</div>
   <div class="foot"><span class="mark">nous<i>.</i></span>${foot}</div></div>`;
+const rgba = (h, a) => `rgba(${[1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16)).join(",")},${a})`;
+// Photo cover: the picture, tinted to the topic hue, under a gradient that turns into the topic's deep colour where the text sits.
+const photoCss = photo ? `
+.s.photo{background:var(--bg)}
+.s.photo .ph{position:absolute;left:0;top:0;width:100%;height:${photo.meta.height || 72}%;object-fit:cover;object-position:${photo.meta.position || "50% 40%"};filter:grayscale(.45) contrast(1.05)}
+.s.photo .tint{position:absolute;inset:0;background:var(--bg);mix-blend-mode:color;opacity:.55}
+.s.photo .shade{position:absolute;inset:0;background:linear-gradient(to bottom,${rgba(th.dark.bg, .85)} 0%,${rgba(th.dark.bg, 0)} 24%),linear-gradient(to top,${rgba(th.dark.bg, 1)} 0%,${rgba(th.dark.bg, 1)} 30%,${rgba(th.dark.bg, .88)} 42%,${rgba(th.dark.bg, .55)} 58%,${rgba(th.dark.bg, .25)} 78%,${rgba(th.dark.bg, .2)} 100%)}
+.s.photo .top{position:relative;z-index:1;text-shadow:0 1px 12px ${rgba(th.dark.bg, .8)}}
+.s.photo .mid{justify-content:flex-end;gap:30px;padding-bottom:12px}
+.s.photo h1{font-family:"Fira Sans Extra Condensed",sans-serif;font-weight:900;font-size:150px;line-height:1.04;letter-spacing:0;font-variation-settings:normal}
+.s.photo .src{font-size:36px;color:var(--fg)}
+.s.photo .src b{color:var(--ac)}` : "";
+const coverSlide = photo
+  ? `<div class="s th photo grain"><img class="ph" src="${pathToFileURL(photo.file).href}" alt=""><div class="tint"></div><div class="shade"></div>
+  <div class="top"><span class="tp">${esc(mainTopic)}</span><span class="ct">Carousel · ${n} ${n === 1 ? "ιδέα" : "ιδέες"}</span></div>
+  <div class="mid"><h1>${rich(args.title)}</h1><div class="src">${fromBooks()}</div></div>
+  <div class="foot"><span class="mark">nous<i>.</i></span><span class="swipe">Σύρε →</span></div></div>`
+  : slide(esc(mainTopic), `Carousel · ${n} ${n === 1 ? "ιδέα" : "ιδέες"}`, n, `<div class="rule"></div><h1>${rich(args.title)}</h1><div class="src">${subtitle}</div>`, `<span class="swipe">Σύρε →</span>`);
 const slides = [
-  slide(esc(mainTopic), `Carousel · ${n} ${n === 1 ? "ιδέα" : "ιδέες"}`, n, `<div class="rule"></div><h1>${rich(args.title)}</h1><div class="src">${subtitle}</div>`, `<span class="swipe">Σύρε →</span>`),
+  coverSlide,
   ...list.map((c, i) => slide(esc(c.topic), `${pad(i + 1)} / ${pad(n)}`, pad(i + 1),
     `<h2>${esc(c.h)}</h2><p>${esc(c.b)}</p><div class="src"><b>${esc(c.title)}</b>${c.author ? " · " + esc(c.author) : ""}</div>`, `<span class="tip">Ideas worth keeping</span>`)),
   slide("nous", "", "", `<h1>${question}</h1><p>${cta}</p><div class="save"><svg viewBox="0 0 24 24"><path d="M6 3h12v18l-6-4-6 4z"/></svg>Κράτα το για αργότερα</div>`,
     `<span class="tip">${cards.size} ιδέες · link στο bio</span>`),
 ];
 const html = `<!doctype html><html lang="el"><head><meta charset="utf-8">
-<style>${css}\n${vars}\n.mid{min-height:0}</style></head><body>\n${slides.join("\n")}\n</body></html>`;
+<style>${css}\n${vars}\n.mid{min-height:0}${photoCss}</style></head><body>\n${slides.join("\n")}\n</body></html>`;
 
 /* Shrink the title and text of a slide together until it fits, but never the body text below MIN_TEXT.
    Returns each slide's box and the slides that still overflow. */
 const LAYOUT = `(async () => {
-  await Promise.all(["700 100px Literata", "400 40px Commissioner", "600 40px Commissioner"].map(f => document.fonts.load(f, "Αβγ Abc 0123")));
+  const need = ["700 100px Literata", "400 40px Commissioner", "600 40px Commissioner"${photo ? `, '900 100px "Fira Sans Extra Condensed"'` : ""}];
+  await Promise.all(need.map(f => document.fonts.load(f, "Αβγ Abc 0123")));
   await document.fonts.ready;
+  await Promise.all([...document.images].map(i => i.decode().catch(() => {})));
   const loaded = new Set([...document.fonts].filter(f => f.status === "loaded").map(f => f.family.replace(/"/g, "")));
-  const fonts = loaded.has("Literata") && loaded.has("Commissioner");
+  const fonts = loaded.has("Literata") && loaded.has("Commissioner")${photo ? ` && loaded.has("Fira Sans Extra Condensed") && [...document.images].every(i => i.naturalWidth > 0)` : ""};
   const overflow = [], sizes = [];
   document.querySelectorAll(".s").forEach((s, i) => {
     const mid = s.querySelector(".mid"), els = [...mid.querySelectorAll("h1,h2,p")];
@@ -158,7 +232,7 @@ async function render(htmlFile, outDir) {
     for (let i = 0; i < 300 && !events.includes("Page.loadEventFired"); i++) await sleep(50);
     const r = await send("Runtime.evaluate", { expression: LAYOUT, awaitPromise: true, returnByValue: true });
     const { fonts, boxes, overflow, sizes } = r.result.value;
-    if (!fonts) throw new Error("Δεν φορτώθηκαν οι γραμματοσειρές από το fonts/ (fonts/fonts.css και τα .woff2).");
+    if (!fonts) throw new Error(`Δεν φορτώθηκαν οι γραμματοσειρές από το fonts/ (fonts/fonts.css και τα .woff2)${photo ? " ή η φωτογραφία του εξωφύλλου" : ""}.`);
     // With --check, also test the app's story image (js/story.js, 1080x1920) for the same cards.
     let story = [];
     if (check) {
@@ -211,5 +285,10 @@ async function render(htmlFile, outDir) {
   try { names = await render(htmlFile, outDir) } catch (e) { fs.rmSync(outDir, { recursive: true, force: true }); throw e }
   fs.writeFileSync(path.join(outDir, "caption.txt"), [args.title.replace(/\*+/g, ""), "",
     ...list.map((c, i) => `${i + 1}. ${c.h} (${c.title}${c.author ? ", " + c.author : ""})`), "", `#nous #${th.slug} #βιβλία #ιδέες`].join("\n") + "\n");
+  if (photo) fs.writeFileSync(path.join(outDir, "photo-credit.txt"), `Φωτογραφία εξωφύλλου: ${photo.meta.title || path.basename(photo.file)}
+Δημιουργός: ${photo.meta.creator}
+Άδεια: ${photo.meta.license} (δεν απαιτείται αναφορά)
+Πηγή: ${photo.meta.url}
+`);
   console.log(`${names.length} εικόνες 1080x1350 στο ${path.relative(ROOT, outDir)}${path.sep}`);
 })().catch(e => { console.error(e.message || e); process.exit(1) });

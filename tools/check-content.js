@@ -37,6 +37,9 @@ for (const f of index.topics) {
   if (!data.topic) errors.push(`${f}: λείπει το "topic"`); else checkTheme(f, data.topic);
   for (const s of data.sources || []) {
     if (!s.id || !s.title) errors.push(`${f}: πηγή χωρίς id ή title`);
+    // Used by the Instagram cover: «ιδέες του Επίκτητου και της Carol Dweck».
+    if (s.author && !/^(του|της|των) \S/.test(s.authorGenitive || ""))
+      errors.push(`${f}: πηγή "${s.id}": το "authorGenitive" λείπει ή δεν ξεκινά με «του», «της» ή «των» (π.χ. "του ${s.author}")`);
     if (srcIds.has(s.id)) errors.push(`${f}: διπλό id πηγής "${s.id}"`);
     srcIds.add(s.id);
     (s.ideas || []).forEach((x, i) => {
